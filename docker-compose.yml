@@ -2,6 +2,14 @@ version: "3.9"
 
 services:
 
+  app:
+    build: .
+    ports: [8000:80]
+    volumes: [./src:/app]
+    command: uvicorn main:app --host=0.0.0.0 --port=80 --reload
+    env_file: [.env]
+    depends_on: [k0s]
+
   k0s:
     container_name: k0s
     image: k0sproject/k0s:v1.28.6-k0s.1
