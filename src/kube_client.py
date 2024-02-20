@@ -12,13 +12,12 @@ class KubeClient:
         if SECRET_KUBE_API_KEY:
             configuration.api_key['authorization'] = f"Bearer {SECRET_KUBE_API_KEY}"
             configuration.host = f"https://{KUBERNETES_SERVICE_HOST}:{KUBERNETES_SERVICE_PORT}"
+            configuration.verify_ssl = False
+            with client.ApiClient(configuration) as api_client:
+                self.api = client.CoreV1Api(api_client)
         else:
             config.load_incluster_config()
-            configuration = config
-        configuration.verify_ssl = False
-        with client.ApiClient(configuration) as api_client:
-            # Create an instance of the API class
-            self.api = client.CoreV1Api(api_client)
+            self.api = client.CoreV1Api()
 
     def _matches_pod_state(self, pod: dict, pod_state: str) -> bool:
         return True
