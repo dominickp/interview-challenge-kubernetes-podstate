@@ -94,3 +94,15 @@ my-helloworld-6d569969c6-q4scc   1/1     Running   0          7m26s
 
 Uninstall
 `helm uninstall indico-chart`
+
+
+### bad state example
+
+`helm install indico-badstate-chart .\helm\indicoapp-badstate\ --values .\helm\indicoapp-badstate\values.yaml`
+`helm uninstall indico-badstate-chart`
+
+
+## Todo
+- Add tests for different state conditions
+- Cleanup/readme
+- Refine code
