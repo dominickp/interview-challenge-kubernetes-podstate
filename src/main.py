@@ -1,8 +1,10 @@
+import os
 from typing import Union
 from fastapi import FastAPI
 
 from kube_client import KubeClient
 
+TARGET_POD_STATUS = os.environ.get("TARGET_POD_STATUS", "Running")
 
 app = FastAPI()
 
@@ -15,7 +17,8 @@ def read_root():
 @app.get("/kube")
 def read_kube():
     client = KubeClient()
-    return client.get_pods()
+    pods = client._get_pods(pod_state=TARGET_POD_STATUS)
+    return client.get_podlist_table(pods.to_dict())
 
 
 @app.get("/items/{item_id}")
