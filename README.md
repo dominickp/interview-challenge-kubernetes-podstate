@@ -87,3 +87,10 @@ my-hello-3-5f4fd4b6fd-298wl      1/1     Running   0          9m57s
 my-hello-5c4f755fc4-bxzxm        1/1     Running   0          12m
 my-helloworld-6d569969c6-q4scc   1/1     Running   0          7m26s
 ```
+
+
+### Deploying app into local kube
+`helm install indico-chart .\helm\indicoapp\ --values .\helm\indicoapp\values.yaml`
+
+Uninstall
+`helm uninstall indico-chart`
