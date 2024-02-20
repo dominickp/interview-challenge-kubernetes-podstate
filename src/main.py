@@ -4,7 +4,7 @@ from typing import Union
 from fastapi import FastAPI
 
 from kube_client import KubeClient
-from response import get_podlist_table, VALID_POD_STATUSES
+from response import create_pod_table_response, VALID_POD_STATUSES
 
 POD_STATUS = os.environ.get("POD_STATUS", "Running")
 if POD_STATUS not in VALID_POD_STATUSES:
@@ -17,7 +17,7 @@ def get_pods_table():
     client = KubeClient()
     try:
         pods = client.get_pods("default")
-        return get_podlist_table(target_pod_state=POD_STATUS, podlist=pods)
+        return create_pod_table_response(target_pod_state=POD_STATUS, podlist=pods)
     except Exception as e:
         logging.exception(e)
         return {"error": str(e)}

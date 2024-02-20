@@ -27,7 +27,7 @@ def get_pod_state(pod: dict) -> str:
         return "Completed"
     return "Running"
 
-def get_podlist_table(target_pod_state: str, podlist: list) -> dict:
+def create_pod_table_response(target_pod_state: str, podlist: list) -> dict:
     """
     Returns a dictionary containing a list of pods with the matching pod state.
 
