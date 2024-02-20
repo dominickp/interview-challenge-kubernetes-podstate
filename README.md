@@ -102,6 +102,9 @@ Uninstall
 `helm uninstall indico-badstate-chart`
 
 
+## Notes
+- Hardest part, setting up kubernetes locally, figuring out how to create service accounts and load credentials
+
 ## Todo
 - Add tests for different state conditions
 - Cleanup/readme
