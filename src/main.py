@@ -17,7 +17,10 @@ def read_root():
 @app.get("/kube")
 def read_kube():
     client = KubeClient()
-    pods = client._get_pods(pod_state=TARGET_POD_STATUS)
+    try:
+        pods = client._get_pods(pod_state=TARGET_POD_STATUS)
+    except Exception as e:
+        return {"error": str(e)}
     return client.get_podlist_table(pods.to_dict())
 
 

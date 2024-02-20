@@ -17,6 +17,15 @@ Step 3 – Deploy your Container
 Deploy your container (preferably using Helm) into your cluster.    This can be either a K8s Job, Deployment or Pod.
 
 ## Setup
+
+Create a .env file:
+
+```sh
+# Run .\scripts\get-api-key.ps1 to get a new one when this expires
+SECRET_KUBE_API_KEY=
+KUBERNETES_SERVICE_HOST=192.168.1.68
+KUBERNETES_SERVICE_PORT=6443
+```
 ### k0s
 Start `k0s` and then run:
 ```sh
