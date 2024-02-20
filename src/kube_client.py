@@ -13,7 +13,8 @@ class KubeClient:
             configuration.api_key['authorization'] = f"Bearer {SECRET_KUBE_API_KEY}"
             configuration.host = f"https://{KUBERNETES_SERVICE_HOST}:{KUBERNETES_SERVICE_PORT}"
         else:
-            configuration.load_incluster_config()
+            config.load_incluster_config()
+            configuration = config
         configuration.verify_ssl = False
         with client.ApiClient(configuration) as api_client:
             # Create an instance of the API class
