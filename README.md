@@ -85,27 +85,11 @@ my-hello-2-bf74b54ff-7xqdj      1/1     Running   0          28m
 my-hello-3-5f4fd4b6fd-trnpv     1/1     Running   0          28m
 ```
 
+### Example deployment that puts a pod in a bad state
 
-
-### Deploying app into local kube
-`helm install indico-chart .\helm\indicoapp\ --values .\helm\indicoapp\values.yaml`
-
-Uninstall
-`helm uninstall indico-chart`
-
-
-### bad state example
-
-`helm install indico-badstate-chart .\helm\indicoapp-badstate\ --values .\helm\indicoapp-badstate\values.yaml`
-`helm uninstall indico-badstate-chart`
-
-
-## Notes
-- Hardest part, setting up kubernetes locally, figuring out how to create service accounts and load credentials
-- Docker-compose: http://localhost:8000/kube
-- On k8s: http://localhost:9001/kube
-
-## Todo
-- Add tests for different state conditions
-- Cleanup/readme
-- Refine code
+```sh
+helm install indico-badstate-chart .\helm\indicoapp-badstate\ --values .\helm\indicoapp-badstate\values.yaml
+```
+```sh
+helm uninstall indico-badstate-chart
+```
