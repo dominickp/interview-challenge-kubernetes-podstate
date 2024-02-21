@@ -1,6 +1,40 @@
 # interview-challenge-kubernetes-podstate
 This repo contains a Python service that uses the Kubernetes API to display a list of pods running with a certain state. GitHub Actions is setup to build and push the docker image to GHCR. Some scripts are included along with a pre-configured k0s that runs inside of Docker (with docker-compose) which facilitate end-to-end testing the service on Kubernetes.
 
+```sh
+curl -s http://localhost:8000/ | jq
+```
+```json
+{
+  "pods": [
+    {
+      "podName": "indico-chart-7987cfdb48-8lpgx",
+      "state": "Running",
+      "instanceName": "indico-chart",
+      "restarts": 0
+    },
+    {
+      "podName": "my-hello-1-6d4cd8686d-b7rwg",
+      "state": "Running",
+      "instanceName": "my-hello-1",
+      "restarts": 0
+    },
+    {
+      "podName": "my-hello-2-bf74b54ff-7xqdj",
+      "state": "Running",
+      "instanceName": "my-hello-2",
+      "restarts": 0
+    },
+    {
+      "podName": "my-hello-3-5f4fd4b6fd-trnpv",
+      "state": "Running",
+      "instanceName": "my-hello-3",
+      "restarts": 0
+    }
+  ]
+}
+```
+
 ## Challenge
 > #### Description
 > You are to build a Python based Kubernetes Service that looks for pods that are in a designated status state. Status should be a parameter to this program, passed in via environment > variable POD_STATUS and can be one of: Terminating, Error, Completed, Running or CreateContainerConfigError. The program should produce a table listing of all pods in the specified state.
