@@ -127,3 +127,13 @@ helm install indico-badstate-chart .\helm\indicoapp-badstate\ --values .\helm\in
 ```sh
 helm uninstall indico-badstate-chart
 ```
+
+```
+PS C:\Users\Dom\Documents\GitHub\interview-challenge-indico> kubectl get pods
+NAME                                     READY   STATUS             RESTARTS   AGE
+indico-badstate-chart-5ccfc8ddc4-4p2r7   0/1     ImagePullBackOff   0          2m45s
+indico-chart-7987cfdb48-8lpgx            1/1     Running            0          31m
+my-hello-1-6d4cd8686d-b7rwg              1/1     Running            0          38m
+my-hello-2-bf74b54ff-7xqdj               1/1     Running            0          38m
+my-hello-3-5f4fd4b6fd-trnpv              1/1     Running            0          38m
+```
