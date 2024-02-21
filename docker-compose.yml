@@ -10,6 +10,15 @@ services:
     env_file: [.env]
     depends_on: [k0s]
 
+  unit-test:
+    build: 
+      context: .
+      dockerfile: ./tests/unit/Dockerfile
+    volumes:
+      - ./tests/unit:/app/tests
+    init: true
+    command: ptw --poll -- -vv .
+
   k0s:
     container_name: k0s
     image: k0sproject/k0s:v1.28.6-k0s.1
