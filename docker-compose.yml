@@ -9,6 +9,8 @@ services:
     command: uvicorn main:app --host=0.0.0.0 --port=80 --reload
     env_file: [.env]
     depends_on: [k0s]
+    environment:
+      POD_STATUS: Running # CreateContainerConfigError, Error, Terminating, Completed, or Running
 
   unit-test:
     build: 
