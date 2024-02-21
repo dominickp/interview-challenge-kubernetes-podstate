@@ -1,5 +1,6 @@
 import os
 from kubernetes import client, config
+from metrics import metric_kubernetes_api_requests
 
 SECRET_KUBE_API_KEY = os.environ.get("SECRET_KUBE_API_KEY")
 KUBERNETES_SERVICE_HOST = os.environ.get("KUBERNETES_SERVICE_HOST", "localhost")
@@ -35,6 +36,7 @@ class KubeClient:
         Returns:
         list: A list of Kubernetes pods.
         """
+        metric_kubernetes_api_requests.labels("list pods", namespace).inc()
         podlist = self.api.list_namespaced_pod(namespace=namespace)
         items = podlist.to_dict().get("items", [])
         return items
