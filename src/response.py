@@ -5,6 +5,7 @@ VALID_POD_STATUSES = frozenset(["Terminating", "Error", "Completed", "Running", 
 def get_pod_state(pod: dict) -> str:
     """
     Returns the state of a Kubernetes pod based on its status and metadata.
+    FIXME: I'm making lots of assumptions of this business logic based on some quick research on pod states.
 
     Parameters:
     pod (dict): A dictionary representing a Kubernetes pod.

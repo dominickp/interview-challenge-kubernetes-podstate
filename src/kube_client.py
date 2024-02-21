@@ -38,4 +38,3 @@ class KubeClient:
         podlist = self.api.list_namespaced_pod(namespace=namespace)
         items = podlist.to_dict().get("items", [])
         return items
-    
