@@ -1,9 +1,7 @@
-# interview-challenge-indico
-
+# interview-challenge-kubernetes-podstate
+This repo contains a Python service that uses the Kubernetes API to display a list of pods running with a certain state. GitHub Actions is setup to build and push the docker image to GHCR. Some scripts are included along with a pre-configured k0s that runs inside of Docker (with docker-compose) which facilitate end-to-end testing the service on Kubernetes.
 
 ## Challenge
-> You have 1-2 days to complete this exercise, email it back to us (as a .zip file), then we will schedule a time to review it online.
-> 
 > #### Description
 > You are to build a Python based Kubernetes Service that looks for pods that are in a designated status state. Status should be a parameter to this program, passed in via environment > variable POD_STATUS and can be one of: Terminating, Error, Completed, Running or CreateContainerConfigError. The program should produce a table listing of all pods in the specified state.
 > 
@@ -16,77 +14,77 @@
 > Step 3 – Deploy your Container
 > Deploy your container (preferably using Helm) into your cluster.    This can be either a K8s Job, Deployment or Pod.
 
-## Setup
+## Local development
+This project utilizes on-container development: where the container we ship is re-utilized as the development environment.
 
-Create a .env file:
-
+To run the container, it should be as simple as:
 ```sh
-# Run .\scripts\get-api-key.ps1 to get a new one when this expires
-SECRET_KUBE_API_KEY=
-KUBERNETES_SERVICE_HOST=192.168.1.68
-KUBERNETES_SERVICE_PORT=6443
+docker-compose up --build app
 ```
-### k0s
-Start `k0s` and then run:
+
+The app should be available here: http://localhost:8000/ And any time code changes are detected, the server will hot-reload.
+
+But to connect to Kubernetes, you'll have to get k0s running first:
+```
+docker-compose up --build k0s
+```
+One that's up, use this command to get an admin kube config:
 ```sh
 docker exec k0s cat /var/lib/k0s/pki/admin.conf
 ```
-Paste the contents into kube conf
+Then save that file in the right place (`C:\Users\Dom\.kube` for me on Windows). Now `kubectl get pods` should be working.
 
-### Helm
-Install it
-
-
-### Get some services running
-
-FIXME: run `.\scripts\deploy-hello-world-pods.ps1`
-
-https://artifacthub.io/packages/helm/cloudecho/hello
+Now you can get a k8s API key for use in local development:
+```sh
+.\scripts\get-api-key.ps1
 ```
-helm repo add cloudecho https://cloudecho.github.io/charts/
-helm repo update
-helm install my-hello-1 cloudecho/hello -n default --version=0.1.2
-helm install my-hello-2 cloudecho/hello -n default --version=0.1.2
-helm install my-hello-3 cloudecho/hello -n default --version=0.1.2
+Then create a .env file and copy the contents of the API key into it:
+
+```sh
+# Run .\scripts\get-api-key.ps1 to get a new one when this expires
+SECRET_KUBE_API_KEY=my-api-key
+KUBERNETES_SERVICE_HOST=192.168.1.68
+KUBERNETES_SERVICE_PORT=6443
 ```
+Set your local IP address of the Docker host as `KUBERNETES_SERVICE_HOST`. So the networking goes out of the app container and back through the host itself to the port we bound to in `docker-compose` (I couldn't get the internal Docker DNS name working). Restart the container when changing this file since it's a change in the container's run context.
 
-1. Get the application URL by running these commands:
-  export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=hello,app.kubernetes.io/instance=my-hello-2" -o jsonpath="{.items[0].metadata.name}")
-  export CONTAINER_PORT=$(kubectl get pod --namespace default $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
-  echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl --namespace default port-forward $POD_NAME 8080:$CONTAINER_PORT
+### Deploy to Kubernetes
+To test the app inside of a Kubernetes cluster, I've created a helm chart which will pull the latest image from GHCR and deploy it into k0s.
 
-Then check the status:
-
+The below script will deploy 3 dummy pods (they will probably be stuck pending due to a taint):
+```sh
+.\scripts\deploy-hello-world-pods.ps1
+```
 ```
 PS C:\Users\Dom\Documents\GitHub\interview-challenge-indico> kubectl get pods
 NAME                          READY   STATUS    RESTARTS   AGE
 my-hello-1-6d4cd8686d-vgj6d   0/1     Pending   0          10s
 my-hello-2-bf74b54ff-ldv7w    0/1     Pending   0          10s
 my-hello-3-5f4fd4b6fd-298wl   0/1     Pending   0          8s
-my-hello-5c4f755fc4-bxzxm     0/1     Pending   0          2m19s
 ```
 
 ```
-  Warning  FailedScheduling  5m26s  default-scheduler  0/1 nodes are available: 1 node(s) had untolerated taint {node-role.kubernetes.io/master: }. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling..
+Warning  FailedScheduling  5m26s  default-scheduler  0/1 nodes are available: 1 node(s) had untolerated taint {node-role.kubernetes.io/master: }. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling..
 ```
 
-Why aren't they running?
+
+Then the below script deploys the helm chart for this Python application. It also applies some other Kubernetes manifests needed for the service account and removes the taint on the master node.
+
+```sh
+.\scripts\deploy-indico-app.ps1
 ```
-kubectl describe pod my-hello-1-6d4cd8686d-vgj6d
-```
-Remove taint from the `k0s` node
-`kubectl taint nodes k0s node-role.kubernetes.io/master-`
+
+If all goes well, the app should be port forwarded and available here: http://localhost:9001/
 
 ```
-PS C:\Users\Dom\Documents\GitHub\interview-challenge-indico> kubectl get pods
-NAME                             READY   STATUS    RESTARTS   AGE
-my-hello-1-6d4cd8686d-vgj6d      1/1     Running   0          9m59s
-my-hello-2-bf74b54ff-ldv7w       1/1     Running   0          9m59s
-my-hello-3-5f4fd4b6fd-298wl      1/1     Running   0          9m57s
-my-hello-5c4f755fc4-bxzxm        1/1     Running   0          12m
-my-helloworld-6d569969c6-q4scc   1/1     Running   0          7m26s
+PS C:\Users\Dom\Documents\GitHub\interview-challenge-indico> kubectl get pods                     
+NAME                            READY   STATUS    RESTARTS   AGE
+indico-chart-7987cfdb48-8lpgx   1/1     Running   0          20m
+my-hello-1-6d4cd8686d-b7rwg     1/1     Running   0          28m
+my-hello-2-bf74b54ff-7xqdj      1/1     Running   0          28m
+my-hello-3-5f4fd4b6fd-trnpv     1/1     Running   0          28m
 ```
+
 
 
 ### Deploying app into local kube
