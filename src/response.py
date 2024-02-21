@@ -13,14 +13,16 @@ def get_pod_state(pod: dict) -> str:
     Returns:
     str: The state of the pod ('CreateContainerConfigError', 'Error', 'Terminating', 'Completed', or 'Running').
     """
-    for stat in pod.get("status", {}).get("container_statuses", []):
-        waiting = stat.get("state", {}).get("waiting", {})
-        if not waiting:
-            continue
-        if waiting.get("reason") == "CreateContainerConfigError":
-            return "CreateContainerConfigError"
-        if waiting.get("reason"):
-            return "Error"
+    statuses = pod.get("status", {}).get("container_statuses", [])
+    if statuses:
+        for stat in statuses:
+            waiting = stat.get("state", {}).get("waiting", {})
+            if not waiting:
+                continue
+            if waiting.get("reason") == "CreateContainerConfigError":
+                return "CreateContainerConfigError"
+            if waiting.get("reason"):
+                return "Error"
 
     if pod.get("metadata", {}).get("deletionTimestamp"):
         return "Terminating"
@@ -40,6 +42,8 @@ def create_pod_table_response(target_pod_state: str, podlist: list) -> dict:
     dict: A dictionary containing a list of pods with the matching pod state.
     """
     result = {"pods": []}
+    if not podlist:
+        return result
     for pod in podlist:
         name = pod.get("metadata", {}).get("name")
         instance_name = pod.get("metadata", {}).get("labels", {}).get("app.kubernetes.io/instance")

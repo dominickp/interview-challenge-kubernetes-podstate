@@ -1,3 +1,10 @@
+# Apply kube manifests to get k8s back to a clean state
+kubectl taint nodes k0s node-role.kubernetes.io/master-
+kubectl apply -f .\scripts\manifest\role.yml
+kubectl apply -f .\scripts\manifest\rolebinding.yml
+kubectl apply -f .\scripts\manifest\service-account.yml
+kubectl apply -f .\scripts\manifest\secret.yml
+
 # Uninstall any existing indico-app pod
 helm uninstall indico-chart
 
