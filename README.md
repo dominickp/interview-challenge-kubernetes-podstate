@@ -97,10 +97,7 @@ my-hello-2-bf74b54ff-ldv7w    0/1     Pending   0          10s
 my-hello-3-5f4fd4b6fd-298wl   0/1     Pending   0          8s
 ```
 
-```
-Warning  FailedScheduling  5m26s  default-scheduler  0/1 nodes are available: 1 node(s) had untolerated taint {node-role.kubernetes.io/master: }. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling..
-```
-
+> Warning  FailedScheduling  5m26s  default-scheduler  0/1 nodes are available: 1 node(s) had untolerated taint {node-role.kubernetes.io/master: }. preemption: 0/1 nodes are available: 1 Preemption is not helpful for scheduling..
 
 Then the below script deploys the helm chart for this Python application. It also applies some other Kubernetes manifests needed for the service account and removes the taint on the master node.
 
