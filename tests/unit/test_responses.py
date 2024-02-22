@@ -1,6 +1,6 @@
 
 import pytest
-from  src.response import get_pod_state, create_pod_table_response
+from src.response import get_pod_state, create_pod_table_response
 
 EXAMPLE_PODS = {
     "CreateContainerConfigError": {

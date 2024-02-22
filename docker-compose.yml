@@ -19,7 +19,7 @@ services:
     volumes:
       - ./tests/unit:/app/tests
     init: true
-    command: ptw --poll -- -vv .
+    command: ptw --poll -- -vv ./tests
 
   k0s:
     container_name: k0s
